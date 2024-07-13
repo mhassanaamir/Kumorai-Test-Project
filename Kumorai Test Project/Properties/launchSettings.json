@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Kumorai_Test_Project": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7180",
+      "launchBrowser": false
+    }
+  }
+}

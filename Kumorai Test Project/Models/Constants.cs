@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Kumorai_Test_Project.Models
+{
+    public static class Constants
+    {
+        public const string BaseUrl = "https://management.azure.com";
+        public const string AuthBaseUrl = "https://management.azure.com/.default";
+        public const string ConsumptionPath = "providers/Microsoft.Consumption/usageDetails";
+        public const string ApiVersion = "api-version=2023-11-01";
+        public const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1HTHFqOThWTkxvWGFGZnBKQ0JwZ0I0SmFLcyIsImtpZCI6Ik1HTHFqOThWTkxvWGFGZnBKQ0JwZ0I0SmFLcyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuYXp1cmUuY29tLyIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzhmOGQwMTEzLWQzZTctNDVmNy04Y2FhLTQyZGE2NzFmMzc5Yi8iLCJpYXQiOjE3MjA4OTkyMDYsIm5iZiI6MTcyMDg5OTIwNiwiZXhwIjoxNzIwOTAzMTA2LCJhaW8iOiJFMmRnWUNqams1U3cyMnk5SzBkVUkyVFBwL2diQUE9PSIsImFwcGlkIjoiNDQ2OGJhMzUtN2RmMy00YzljLWEzZWUtODg3ODQ1YjAyNmQxIiwiYXBwaWRhY3IiOiIxIiwiaWRwIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvOGY4ZDAxMTMtZDNlNy00NWY3LThjYWEtNDJkYTY3MWYzNzliLyIsImlkdHlwIjoiYXBwIiwib2lkIjoiYjRhZGI1NzItNTZhZS00M2ViLTk4MGMtMGM0MDRlMTVhYjAxIiwicmgiOiIwLkFiMEFFd0dOai1mVDkwV01xa0xhWng4M20wWklmM2tBdXRkUHVrUGF3ZmoyTUJNREFRQS4iLCJzdWIiOiJiNGFkYjU3Mi01NmFlLTQzZWItOTgwYy0wYzQwNGUxNWFiMDEiLCJ0aWQiOiI4ZjhkMDExMy1kM2U3LTQ1ZjctOGNhYS00MmRhNjcxZjM3OWIiLCJ1dGkiOiJ4QkUwOUxYVjYwNlZMMnY4QzdKeUFBIiwidmVyIjoiMS4wIiwieG1zX2lkcmVsIjoiOCA3IiwieG1zX3RjZHQiOjE3MTYyMTgwNDN9.Y8nFRdKuD8XF8IYmWLxl4R2S4w66A7htGpsrHdLxZQ9DdlSFkiLKUCks75AVEG6QBfeHrAbNbNX45V-UtL5GRq3hy8AGR-7p7cLD199VbzajVKjHnN2z_lj76baS9HFmHkGAGarOU8ZWCaTHXcUoR-juWSnAo79qdp_MbBBI9kRXLdtYXLpO8JZQuP1bJ7sT9kkOP5u46bfWnLZlSxN1snN1dkW1CBfExxdjtHfinAiOGViAT1-VKzU7qtcFIAEI0x1KWwOALukqo9xvKiO6U4YnqhKvtqj7Bj5-a7hWu6AMKookzpu58_2vLziuWCjrWvlaoqfl04zkfrY9U-1WHA";
+    }
+}
