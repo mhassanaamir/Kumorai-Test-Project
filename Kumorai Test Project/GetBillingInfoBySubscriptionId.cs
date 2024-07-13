@@ -26,28 +26,33 @@ namespace Kumorai_Test_Project
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
+            
             string subscriptionId = data?.SubscriptionId;
 
             var response = req.CreateResponse();
 
             if (string.IsNullOrEmpty(subscriptionId))
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                await response.WriteStringAsync("SubscriptionId is required");
-                return response;
+                return Models.HttpResponse.CreateResponse(req, "SubscriptionId is required", System.Net.HttpStatusCode.BadRequest);
             }
 
-            string accessToken = await AzureAuth.GetTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            try
+            {
+                string accessToken = await AzureAuth.GetTokenAsync();
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-            string requestUri = $"{Constants.BaseUrl}/subscriptions/{subscriptionId}/{Constants.ConsumptionPath}/?{Constants.ApiVersion}";
-            var billingInfo = await _httpClient.GetFromJsonAsync<object>(requestUri);
+                string requestUri = $"{ApiConstants.BaseUrl}/{subscriptionId}/{ApiConstants.ConsumptionPath}/?{ApiConstants.ApiVersion}";
+                var billingInfo = await _httpClient.GetFromJsonAsync<object>(requestUri);
 
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            await response.WriteAsJsonAsync(billingInfo);
-
-            _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoBySubscriptionId)}");
-            return response;
+                _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoBySubscriptionId)}");
+                return Models.HttpResponse.CreateResponse(req, billingInfo, System.Net.HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred: {0}", ex.Message);
+                return Models.HttpResponse.CreateResponse(req, $"An error occurred. {ex.Message}", System.Net.HttpStatusCode.InternalServerError);
+            }
+            
         }
     }
 }

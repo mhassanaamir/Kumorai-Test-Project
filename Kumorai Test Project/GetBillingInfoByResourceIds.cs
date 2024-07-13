@@ -26,6 +26,7 @@ namespace Kumorai_Test_Project
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
+           
             IEnumerable<string> resourceIds = data?.ResourceIds?.ToObject<List<string>>();
             string subscriptionId = data?.SubscriptionId;
 
@@ -33,29 +34,33 @@ namespace Kumorai_Test_Project
 
             if (string.IsNullOrEmpty(subscriptionId) || resourceIds == null || !resourceIds.Any())
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                await response.WriteStringAsync("ResourceIds and SubscriptionId are required");
-                return response;
+                return Models.HttpResponse.CreateResponse(req, "ResourceIds and SubscriptionId are required", System.Net.HttpStatusCode.BadRequest);
             }
 
-            string accessToken = await AzureAuth.GetTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-
-            var billingInfoTaskList = new List<Task>();
-
-            foreach (var resourceId in resourceIds)
+            try
             {
-                string requestUri = $"{Constants.BaseUrl}/subscriptions/{subscriptionId}/{Constants.ConsumptionPath}/{resourceId}?{Constants.ApiVersion}";
-                var billingInfoTask = _httpClient.GetFromJsonAsync<object>(requestUri);
-                billingInfoTaskList.Add(billingInfoTask);
+                string accessToken = await AzureAuth.GetTokenAsync();
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+                var billingInfoTaskList = new List<Task>();
+
+                foreach (var resourceId in resourceIds)
+                {
+                    string requestUri = $"{ApiConstants.BaseUrl}/{subscriptionId}/{ApiConstants.ConsumptionPath}/{resourceId}?{ApiConstants.ApiVersion}";
+                    var billingInfoTask = _httpClient.GetFromJsonAsync<object>(requestUri);
+                    billingInfoTaskList.Add(billingInfoTask);   // Add each task in list then use when all for optimization
+                }
+
+                await Task.WhenAll(billingInfoTaskList);
+
+                _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoByResourceIds)}");
+                return Models.HttpResponse.CreateResponse(req, billingInfoTaskList, System.Net.HttpStatusCode.OK);
             }
-
-            await Task.WhenAll(billingInfoTaskList);
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            await response.WriteAsJsonAsync(billingInfoTaskList);
-
-            _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoByResourceIds)}");
-            return response;
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred: {0}", ex.Message);
+                return Models.HttpResponse.CreateResponse(req, $"An error occurred. {ex.Message}", System.Net.HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

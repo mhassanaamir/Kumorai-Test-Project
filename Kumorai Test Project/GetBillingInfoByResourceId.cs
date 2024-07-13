@@ -24,6 +24,7 @@ namespace Kumorai_Test_Project
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
+
             string resourceId = data?.ResourceId;
             string subscriptionId = data?.SubscriptionId;
 
@@ -31,22 +32,25 @@ namespace Kumorai_Test_Project
 
             if (string.IsNullOrEmpty(subscriptionId) || string.IsNullOrEmpty(resourceId))
             {
-                response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                await response.WriteStringAsync("ResourceId and SubscriptionId are required");
-                return response;
+                return HttpResponse.CreateResponse(req, "ResourceId and SubscriptionId are required", System.Net.HttpStatusCode.BadRequest);
             }
 
-            string accessToken = await AzureAuth.GetTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+            try
+            {
+                string accessToken = await AzureAuth.GetTokenAsync();
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-            string requestUri = $"{Constants.BaseUrl}/subscriptions/{subscriptionId}/{Constants.ConsumptionPath}/{resourceId}?{Constants.ApiVersion}";
-            var billingInfo = await _httpClient.GetFromJsonAsync<object>(requestUri);
+                string requestUri = $"{ApiConstants.BaseUrl}/{subscriptionId}/{ApiConstants.ConsumptionPath}/{resourceId}?{ApiConstants.ApiVersion}";
+                var billingInfo = await _httpClient.GetFromJsonAsync<object>(requestUri);
 
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            await response.WriteAsJsonAsync(billingInfo);
-
-            _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoByResourceId)}");
-            return response;
+                _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoByResourceId)}");
+                return HttpResponse.CreateResponse(req, billingInfo, System.Net.HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred: {0}", ex.Message);
+                return HttpResponse.CreateResponse(req, $"An error occurred. {ex.Message}", System.Net.HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
