@@ -20,10 +20,11 @@ Test project for Kumurai contains Azure Functions to retrieve billing informatio
 Code:
 1. Clone the repository.
 2. Navigate to the project directory.
-3. Install the required packages:
+3. Add service principal credentials in local.settings.json (see Azure)
+4. Install the required packages:
    dotnet restore
-4. Run Project
-5. Open Postman and test collection :
+5. Run Project
+6. Open Postman and test collection :
    https://grey-equinox-148404.postman.co/workspace/New-Team-Workspace~800010db-0459-45a1-be76-782aae162254/collection/26824320-a3212bc8-2f9c-4818-81a9-b26783b77f3d?action=share&creator=26824320
 
 Azure:
