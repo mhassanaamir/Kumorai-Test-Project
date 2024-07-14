@@ -9,10 +9,10 @@ namespace Kumorai_Test_Project.Models
 {
     public static class HttpResponse
     {
-        public static HttpResponseData CreateResponse(HttpRequestData req, object content, System.Net.HttpStatusCode statusCode) // HttpResponse wrapper
+        public static HttpResponseData CreateResponse(HttpRequestData req, object content, System.Net.HttpStatusCode statusCode, bool configureAwait = false) // HttpResponse wrapper
         {
             var response = req.CreateResponse(statusCode);
-            _ = response.WriteAsJsonAsync(content).ConfigureAwait(false);
+            _ = response.WriteAsJsonAsync(content).ConfigureAwait(configureAwait);
             return response;
         }
     }

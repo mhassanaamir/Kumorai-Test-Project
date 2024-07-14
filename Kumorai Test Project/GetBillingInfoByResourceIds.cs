@@ -42,7 +42,7 @@ namespace Kumorai_Test_Project
                 string accessToken = await AzureAuth.GetTokenAsync();
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-                var billingInfoTaskList = new List<Task>();
+                var billingInfoTaskList = new List<Task<object>>();
 
                 foreach (var resourceId in resourceIds)
                 {
@@ -54,7 +54,7 @@ namespace Kumorai_Test_Project
                 await Task.WhenAll(billingInfoTaskList);
 
                 _logger.LogInformation($"Successfully ran {nameof(GetBillingInfoByResourceIds)}");
-                return Models.HttpResponse.CreateResponse(req, billingInfoTaskList, System.Net.HttpStatusCode.OK);
+                return Models.HttpResponse.CreateResponse(req, billingInfoTaskList, System.Net.HttpStatusCode.OK, configureAwait: true);
             }
             catch (Exception ex)
             {
